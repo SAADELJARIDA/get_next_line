@@ -82,26 +82,3 @@ char	*ft_calloc(size_t ne, size_t size)
 			*(ptr + ne) = 0;
 	return (ptr);
 }
-
-char	*ft_memmove(char *dest, char *src, int n)
-{
-	int	i;
-
-	i = 0;
-	if (!dest && !src)
-		return (NULL);
-	if (dest <= src)
-	{
-		while (i < n)
-		{
-			*(dest + i) = *(src + i);
-			i++;
-		}
-	}
-	else
-	{
-		while (n--)
-			*(dest + n) = *(src + n);
-	}
-	return (dest);
-}

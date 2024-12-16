@@ -12,6 +12,16 @@
 
 #include "get_next_line.h"
 
+int	initialize(int fd, char **line, char **leftover, char **buff)
+{
+	*line = *leftover;
+	if (!*line)
+		*line = ft_calloc(1, 1);
+	*leftover = 0;
+	*buff = malloc(BUFFER_SIZE + 1);
+	return (read(fd, *buff, BUFFER_SIZE));
+}
+
 int	fetch_line(char *buff)
 {
 	int	i;
@@ -23,11 +33,25 @@ int	fetch_line(char *buff)
 	return (-1);
 }
 
+void	free_mem(char **buff, char **line)
+{
+	if (*buff)
+	{
+		free(*buff);
+		*buff = NULL;
+	}
+	if (*line)
+	{
+		free(*line);
+		*line = NULL;
+	}
+}
+
 char	*return_line(char **line, char **leftover, int line_len)
 {
 	char	*line_to_return;
 
-	if (line_len == -1)//if theres is no newline
+	if (line_len == -1)
 	{
 		return (*line);
 	}
@@ -45,28 +69,21 @@ char	*get_next_line(int fd)
 	int			buff_len;
 	int			line_len;
 
-	line = leftover;
-	if (!line)
-		line = ft_calloc(1, 1);
-	leftover = 0;
-	buff = malloc(BUFFER_SIZE + 1);
-	buff_len = read(fd, buff, BUFFER_SIZE);
-	while (buff_len >= 0)
+	buff_len = initialize(fd, &line, &leftover, &buff);
+	while (buff_len >= 0 && buff && line)
 	{
 		buff[buff_len] = 0;
 		line = ft_strjoin(line, buff);
 		line_len = fetch_line(line);
 		if (buff_len <= 0 && !*line)
 			break ;
-		if (line_len == -1 && buff_len)
+		if (line_len != -1 || (!buff_len && line))
 		{
-			buff_len = read(fd, buff, BUFFER_SIZE);
-			continue ;
+			free(buff);
+			return (return_line(&line, &leftover, line_len));
 		}
-		free(buff);
-		return (return_line(&line, &leftover, line_len));
+		buff_len = read(fd, buff, BUFFER_SIZE);
 	}
-	free(buff);
-	free(line);
+	free_mem(&buff, &line);
 	return (0);
 }
