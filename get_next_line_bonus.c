@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sel-jari <marvin@42.ma>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,13 +12,13 @@
 
 #include "get_next_line.h"
 
-int	initialize(int fd, char **line, char **leftover, char **buff)
+int	initialize(int fd, char **line, char *leftover[1024], char **buff)
 {
-	*line = *leftover;
+	*line = leftover[fd];
 	if (!*line)
 		*line = ft_calloc(1, 1);
-	*leftover = 0;
-	*buff = malloc(BUFFER_SIZE + 1);
+	leftover[fd] = 0;
+	*buff = malloc(BUFFER_SIZE * sizeof(char) + 1);
 	return (read(fd, *buff, BUFFER_SIZE));
 }
 
@@ -47,7 +47,7 @@ void	free_mem(char **buff, char **line)
 	}
 }
 
-char	*return_line(char **line, char **leftover, int line_len)
+char	*return_line(int fd, char **line, char *leftover[123], int line_len)
 {
 	char	*line_to_return;
 
@@ -56,31 +56,31 @@ char	*return_line(char **line, char **leftover, int line_len)
 		return (*line);
 	}
 	line_to_return = ft_substr(*line, 0, line_len + 1);
-	*leftover = ft_substr(*line, line_len + 1, ft_strlen(*line));
+	leftover[fd] = ft_substr(*line, line_len + 1, ft_strlen(*line));
 	free(*line);
 	return (line_to_return);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*leftover;
+	static char	*leftover[1024];
 	char		*buff;
 	char		*line;
 	int			buff_len;
 	int			line_len;
 
-	buff_len = initialize(fd, &line, &leftover, &buff);
+	buff_len = initialize(fd, &line, leftover, &buff);
 	while (buff_len >= 0 && buff && line)
 	{
 		buff[buff_len] = 0;
 		line = ft_strjoin(line, buff);
-		line_len = fetch_line(line);
-		if (buff_len <= 0 && !*line)
+		if (!*line || !line)
 			break ;
-		if (line_len != -1 || (!buff_len && line))
+		line_len = fetch_line(line);
+		if (line_len != -1 || !buff_len)
 		{
 			free(buff);
-			return (return_line(&line, &leftover, line_len));
+			return (return_line(fd, &line, leftover, line_len));
 		}
 		buff_len = read(fd, buff, BUFFER_SIZE);
 	}

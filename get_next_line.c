@@ -17,8 +17,8 @@ int	initialize(int fd, char **line, char **leftover, char **buff)
 	*line = *leftover;
 	if (!*line)
 		*line = ft_calloc(1, 1);
-	*leftover = 0;
-	*buff = malloc(BUFFER_SIZE + 1);
+	*leftover = 0; // because if we remove this line 
+	*buff = malloc(BUFFER_SIZE * sizeof(char) + 1);
 	return (read(fd, *buff, BUFFER_SIZE));
 }
 
@@ -53,6 +53,7 @@ char	*return_line(char **line, char **leftover, int line_len)
 
 	if (line_len == -1)
 	{
+		printf("aaa\n");
 		return (*line);
 	}
 	line_to_return = ft_substr(*line, 0, line_len + 1);
@@ -74,10 +75,10 @@ char	*get_next_line(int fd)
 	{
 		buff[buff_len] = 0;
 		line = ft_strjoin(line, buff);
-		line_len = fetch_line(line);
-		if (buff_len <= 0 && !*line)
+		if (!*line || !line)
 			break ;
-		if (line_len != -1 || (!buff_len && line))
+		line_len = fetch_line(line);
+		if (line_len != -1 || !buff_len)
 		{
 			free(buff);
 			return (return_line(&line, &leftover, line_len));
