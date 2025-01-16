@@ -17,7 +17,7 @@ int	initialize(int fd, char **line, char **leftover, char **buff)
 	*line = *leftover;
 	if (!*line)
 		*line = ft_calloc(1, 1);
-	*leftover = 0; // because if we remove this line 
+	*leftover = 0;
 	*buff = malloc(BUFFER_SIZE * sizeof(char) + 1);
 	return (read(fd, *buff, BUFFER_SIZE));
 }
