@@ -52,10 +52,7 @@ char	*return_line(char **line, char **leftover, int line_len)
 	char	*line_to_return;
 
 	if (line_len == -1)
-	{
-		printf("aaa\n");
 		return (*line);
-	}
 	line_to_return = ft_substr(*line, 0, line_len + 1);
 	*leftover = ft_substr(*line, line_len + 1, ft_strlen(*line));
 	free(*line);

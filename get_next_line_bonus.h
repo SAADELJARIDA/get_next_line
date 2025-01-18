@@ -19,7 +19,6 @@
 
 # include <unistd.h>
 # include <stdlib.h>
-# include <stdio.h>
 
 char	*get_next_line(int fd);
 char	*ft_calloc(size_t ne, size_t size);

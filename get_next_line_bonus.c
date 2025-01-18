@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-int	initialize(int fd, char **line, char *leftover[1024], char **buff)
+int	initialize(int fd, char **line, char **leftover, char **buff)
 {
 	*line = leftover[fd];
 	if (!*line)
@@ -47,7 +47,7 @@ void	free_mem(char **buff, char **line)
 	}
 }
 
-char	*return_line(int fd, char **line, char *leftover[123], int line_len)
+char	*return_line(int fd, char **line, char **leftover, int line_len)
 {
 	char	*line_to_return;
 
@@ -63,7 +63,7 @@ char	*return_line(int fd, char **line, char *leftover[123], int line_len)
 
 char	*get_next_line(int fd)
 {
-	static char	*leftover[1024];
+	static char	*leftover[10204];
 	char		*buff;
 	char		*line;
 	int			buff_len;
