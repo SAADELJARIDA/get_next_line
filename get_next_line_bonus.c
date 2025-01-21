@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	initialize(int fd, char **line, char **leftover, char **buff)
 {
@@ -63,12 +63,14 @@ char	*return_line(int fd, char **line, char **leftover, int line_len)
 
 char	*get_next_line(int fd)
 {
-	static char	*leftover[10204];
+	static char	*leftover[1024];
 	char		*buff;
 	char		*line;
 	int			buff_len;
 	int			line_len;
 
+	if (fd > 1023 || fd < 0)
+		return (0);
 	buff_len = initialize(fd, &line, leftover, &buff);
 	while (buff_len >= 0 && buff && line)
 	{
